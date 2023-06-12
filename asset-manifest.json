@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/my-photo-share/static/css/main.e6c13ad2.css",
-    "main.js": "/my-photo-share/static/js/main.85786279.js",
+    "main.js": "/my-photo-share/static/js/main.c5012273.js",
     "static/media/lg_logo_new.png": "/my-photo-share/static/media/lg_logo_new.b5e6878312aa65b1e9e4.png",
     "index.html": "/my-photo-share/index.html",
     "main.e6c13ad2.css.map": "/my-photo-share/static/css/main.e6c13ad2.css.map",
-    "main.85786279.js.map": "/my-photo-share/static/js/main.85786279.js.map"
+    "main.c5012273.js.map": "/my-photo-share/static/js/main.c5012273.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.85786279.js"
+    "static/js/main.c5012273.js"
   ]
 }

@@ -6,7 +6,8 @@ import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import { CardActionArea, Grid, TextField } from '@mui/material';
 import { Card, CardContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
+import {SET_CATEGORY} from '../redux/actionTypes'
 const categorys = [
     { title: 'Category#1' },
     { title: 'Category#2' },
@@ -51,13 +52,14 @@ const categoriesList = [
 
 export default function Home() {
     const navigate = useNavigate();
+    const dispatch=useDispatch();
     const filterOptions = createFilterOptions({
         matchFrom: 'start',
         stringify: (option) => option.title,
     });
     const [selectedCategory, setSelectedCategory] = React.useState(null);
     const handleCategoryClick = (category) => {
-        console.log(`Clicked category: ${category}`);
+        dispatch({ type : SET_CATEGORY,payload:category})
         navigate('/upload');
 
     };
@@ -73,8 +75,8 @@ export default function Home() {
     return (
         <>
 
-            <Container>
-                <Box sx={{ my: 2 }}>
+            <Container >
+                <Box sx={{ marginTop:'100px',marginBottom:'16px'}}>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                         <Autocomplete
                             id="filter-demo"
@@ -84,7 +86,7 @@ export default function Home() {
                             onChange={handleAutocompleteChange}
                             getOptionLabel={(option) => option.title}
                             filterOptions={filterOptions}
-                            sx={{ width: 300, marginTop: '25px' }}
+                            sx={{ width: 300}}
                             renderInput={(params) => <TextField {...params} label="Filter" />}
                         />
                     </Box>

@@ -4,8 +4,11 @@ import Home from './views/Home'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Upload from './views/Upload';
 import Header from './views/Header';
+import PrivateRoute from './views/PrivateRoute';
+import { useSelector } from 'react-redux';
+
 const App = () => {
-  const username = 'John';
+  const back = true
   return (
     <Router>
       <Routes>
@@ -13,27 +16,25 @@ const App = () => {
         <Route
           path="/home"
           element={
-            <>
-              <Header username={username} />
+            <PrivateRoute>
+              <Header/>
               <Home />
-            </>
+            </PrivateRoute>
           }
         />
         <Route
           path="/upload"
           element={
-            <>
-              <Header username={username} />
+            <PrivateRoute>
+              <Header back={back} />
               <Upload />
-            </>
+            </PrivateRoute>
           }
         />
       </Routes>
     </Router>
+  );
+};
 
-  )
-}
-
-export default App
-
+export default App;
 

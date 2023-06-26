@@ -30,9 +30,8 @@ function Upload() {
     const [uploadComplete, setUploadComplete] = useState(false);
     const [open, setOpen] = useState(false);
     const [msg,setMsg]=useState('');
-    let count=0;
+    // let count=0;
     const [severity,setSeverity]=useState('');
-    const [test,setTest]=useState(true)
     // useEffect(() => {
     //     setIsLoading(true)
     //     axios.get(`${baseURL}/api/image-upload/${userData.empId}`)
@@ -99,7 +98,7 @@ function Upload() {
                 },
                 FilesAdded: function (up, files) {
                     const newPreviewImages = [];
-                    count=files.length
+                    // count=files.length
                     plupload.each(files, function (file) {
                         const fileURL = URL.createObjectURL(file.getNative());
                         newPreviewImages.push(fileURL);
@@ -131,6 +130,9 @@ function Upload() {
                     setUploadComplete(!uploadComplete);
                     setImagePreviews([]);
                     setIsUploading(false);
+                    uploader.splice();
+                    uploader.refresh();
+
                 },
                 Error: function (up, err) {
                     console.log('Error #' + err.code + ': ' + err.message);

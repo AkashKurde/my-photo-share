@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { LOGIN_SUCCESS, LOGOUT } from '../actionTypes';
+import { baseURL } from '../../utils/services.js';
 
-export const login = (username,password) => {
+export const login = (empName,empId) => {
     return (dispatch) => {
       return new Promise((resolve, reject) => {
-        axios.post('https://dummyjson.com/auth/login', {username,password})
+        axios.post(`${baseURL}/api/identity`, {empName,empId})
           .then((response) => {
             const user = response.data;
             dispatch(loginSuccess(user));

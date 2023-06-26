@@ -7,7 +7,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['CategoryReducer','auth']
+    whitelist: ['CategoryReducer','auth','AgreeReducer']
   };
   
   const persistedReducer = persistReducer(persistConfig, rootReducer)

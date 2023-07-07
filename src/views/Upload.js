@@ -12,6 +12,8 @@ import plupload from 'plupload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import CollectionsIcon from '@mui/icons-material/Collections';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -84,7 +86,8 @@ function Upload() {
                 max_file_size: '100gb',
                 mime_types: [
                     { title: 'Image files', extensions: 'jpg,gif,png' },
-                ]
+                ],
+                prevent_duplicates: true
             },
             init: {
                 PostInit: function () {
@@ -137,7 +140,7 @@ function Upload() {
                 Error: function (up, err) {
                     console.log('Error #' + err.code + ': ' + err.message);
                     setOpen(true);
-                    setMsg('Error In Upload');
+                    setMsg(err.message);
                     setSeverity("error");
                     // setIsUploading(false);
                 }
@@ -157,10 +160,30 @@ function Upload() {
         setOpen(false);
     };
 
+    // open only camera
+    const openCamera = () => {
+        const input = document.getElementById('camera-input');
+        input.click();
+    };
+
+    //add captured image to plupload
+    const handleCapture = (event) => {
+        const file = event.target.files[0];
+        const uploader = uploaderRef.current;
+        const blob = new Blob([file], { type: file.type });
+        const imageName = 'imagename.png'; // Custom filename
+
+        // Set the name property of the Blob object to the custom filename
+        blob.name = imageName;
+
+        // Add the Blob object to the Plupload uploader
+        uploader.addFile(blob, imageName);
+    };
+
     return (
         <>
-            <Box overflow="auto" maxHeight="77vh" width="100%" sx={{ marginTop: '75px' }} ref={containerRef}>
-                <Grid container spacing={2} justifyContent="center">
+            <Box overflow="auto" maxHeight="77vh" width="100%" sx={{ marginTop: '75px'}} ref={containerRef}>
+                <Grid container spacing={2} justifyContent="center" sx={{paddingBottom:'10px'}}>
 
                     {uploadedData.map((preview, index) => (
                         <Grid item key={index}>
@@ -222,117 +245,43 @@ function Upload() {
                         </Grid>
                     ))}
                 </Grid>
-
             </Box>
-            {/* <Box
-                position="fixed"
-                bottom={0}
-                left={0}
-                width="100%"
-                display="flex"
-                sx={{ paddingTop: '16px', paddingBottom: '16px', justifyContent: 'space-between' }}
-                bgcolor="#f5f5f5"
-                zIndex={2}
-            > */}
-            {/* <div
-                    style={{
-                        position: 'relative',
-                        width: '66px',
-                        height: '66px',
-                    }}
-                > */}
-            {/* <ButtonBase sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        borderRadius: '50%',
-                        visibility: imagePreviews.length === 0 ? 'visible' : 'hidden',
-                        zIndex: imagePreviews.length === 0 ? 1 : -1,
-                        opacity: imagePreviews.length === 0 ? 1 : 0.5,
-                        border: '2px solid'
-                    }} id='pickfiles'>
-                        <Avatar sx={{ width: '66px', height: '66px' }}>
-                            <AddAPhotoIcon sx={{ width: '42px', height: '42px', color: 'black', marginBottom: '3px', marginRight: '2px' }} />
-                        </Avatar>
-                    </ButtonBase>
-                    <ButtonBase sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        borderRadius: '50%',
-                        visibility: imagePreviews.length === 0 ? 'hidden' : 'visible',
-                        opacity: imagePreviews.length === 0 ? 0.5 : 1,
-                        zIndex: imagePreviews.length === 0 ? -1 : 1,
-                        border: '2px solid'
-                    }} id='uploadfiles'>
-                        <Avatar sx={{ width: '66px', height: '66px' }}>
-                            <SendIcon sx={{ width: '40px', height: '40px', color: 'black', marginLeft: '7px' }} />
-                        </Avatar>
-                    </ButtonBase> */}
-
-            {/* <ButtonBase sx={{ borderRadius: '50%', marginLeft: '12px' }} id='pickfiles'>
-                    <Avatar sx={{ width: '66px', height: '66px' }}>
-                        <AddAPhotoIcon sx={{ width: '42px', height: '42px', color: 'black', marginBottom: '3px', marginRight: '2px' }} />
-                    </Avatar>
-                </ButtonBase>
-
-                <ButtonBase sx={{ borderRadius: '50%', marginRight: '12px', opacity: imagePreviews.length === 0 ? 0.5 : 1, pointerEvents: imagePreviews.length === 0 && 'none' }} id='uploadfiles'>
-                    <Avatar sx={{ width: '66px', height: '66px' }}>
-                        <SendIcon sx={{ width: '40px', height: '40px', color: 'black', marginLeft: '7px' }} />
-                    </Avatar>
-                </ButtonBase> */}
-
-            {/* </div> */}
-
-            {/* </Box> */}
             <Box
                 position="fixed"
                 bottom={0}
                 left={0}
                 width="100%"
                 display="flex"
-                justifyContent="center"
-                sx={{ paddingTop: '12px', paddingBottom: '4px' }}
+                justifyContent="space-around"
+                sx={{ paddingTop: '10px', paddingBottom: '7px' }}
                 bgcolor="#f5f5f5"
                 zIndex={2}
             >
-                <div
-                    style={{
-                        position: 'relative',
-                        width: '66px',
-                        height: '66px',
-                    }}
-                >
-                    <ButtonBase sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        borderRadius: '50%',
-                        visibility: imagePreviews.length === 0 ? 'visible' : 'hidden',
-                        zIndex: imagePreviews.length === 0 ? 1 : -1,
-                        opacity: imagePreviews.length === 0 ? 1 : 0.5,
-                        border: '2px solid'
-                    }} id='pickfiles'>
-                        <Avatar sx={{ width: '56px', height: '56px' }}>
-                            <AddAPhotoIcon sx={{ width: '35px', height: '35px', color: 'black', marginBottom: '3px', marginRight: '2px' }} />
-                        </Avatar>
-                    </ButtonBase>
-                    <ButtonBase sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        borderRadius: '50%',
-                        visibility: imagePreviews.length === 0 ? 'hidden' : 'visible',
-                        opacity: imagePreviews.length === 0 ? 0.5 : 1,
-                        zIndex: imagePreviews.length === 0 ? -1 : 1,
-                        border: '2px solid'
-                    }} id='uploadfiles'>
-                        <Avatar sx={{ width: '56px', height: '56px' }}>
-                            <SendIcon sx={{ width: '35px', height: '35px', color: 'black', marginLeft: '7px' }} />
-                        </Avatar>
-                    </ButtonBase>
 
-                </div>
+                <ButtonBase onClick={openCamera} sx={{ borderRadius: '50%', border: '2px solid' }}>
+                    <Avatar sx={{ width: '58px', height: '58px' }}>
+                        <CameraAltIcon sx={{ width: '40px', height: '40px', color: 'black', marginBottom: '-1px', marginRight: '-1px' }} />
+                    </Avatar>
+                </ButtonBase>
+                <input
+                    id="camera-input"
+                    type="file"
+                    accept="image/*"
+                    capture="camera"
+                    onChange={handleCapture}
+                    style={{ display: 'none' }}
+                />
+                <ButtonBase sx={{ borderRadius: '50%', border: '2px solid' }} id='pickfiles'>
+                    <Avatar sx={{ width: '58px', height: '58px' }}>
+                        <CollectionsIcon sx={{ width: '40px', height: '40px', color: 'black', marginBottom: '-1px', marginRight: '-1px' }} />
+                    </Avatar>
+                </ButtonBase>
+
+                <ButtonBase sx={{ borderRadius: '50%', border: '2px solid', opacity: imagePreviews.length === 0 ? 0.5 : 1, pointerEvents: imagePreviews.length === 0 && 'none' }} id='uploadfiles'>
+                    <Avatar sx={{ width: '58px', height: '58px' }}>
+                        <SendIcon sx={{ width: '40px', height: '40px', color: 'black', marginLeft: '7px' }} />
+                    </Avatar>
+                </ButtonBase>
 
             </Box>
             {isUploading && (

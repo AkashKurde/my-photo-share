@@ -8,7 +8,10 @@ import PrivateRoute from './views/PrivateRoute';
 import { useSelector } from 'react-redux';
 
 const App = () => {
-  const back = true
+  const back = true;
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+});
   return (
     <Router>
       <Routes>

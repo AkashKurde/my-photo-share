@@ -30,9 +30,11 @@ const AgreementPage = () => {
     dispatch({ type: AGREEMENT, payload: true });
   }
   const styleToString = (style) => {
+
     return Object.keys(style)
       .map((key) => `${key}: ${style[key]}`)
       .join('; ');
+      
   };
   const handleDisagree = () => {
     dispatch({ type: AGREEMENT, payload: false });

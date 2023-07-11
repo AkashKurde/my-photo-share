@@ -186,7 +186,7 @@ function Upload() {
                 <Grid container spacing={2} justifyContent="center" sx={{paddingBottom:'10px'}}>
 
                     {uploadedData.map((preview, index) => (
-                        <Grid item key={index}>
+                        <Grid item key={index} md={5}>
                             <Card sx={{ width: 320, height: 200 }}>
                                 <div style={{ position: 'relative' }}>
                                     <CardMedia

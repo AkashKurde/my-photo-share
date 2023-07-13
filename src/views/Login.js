@@ -26,17 +26,25 @@ const Login = () => {
     const [userHelperTxt, setUserHelperTxt] = useState('')
     const [empIdHelperTxt, setEmpIdHelperTxt] = useState('')
     const [captchaHelperTxt, setCaptchaHelperTxt] = useState('')
+    const [passwordText, setPasswordText] = useState('')
     const [loading, setLoading] = useState(false);
     const agreement = useSelector(state => state.AgreeReducer.agree);
-
+    const [password,setPassword] = useState('')
+    
     const handleUsername = (e) => {
         setUsername(e.target.value);
         setUserHelperTxt('')
 
     }
+    const [newfiled,setNewfiled] = useState(false)
     const handleEmpId = (e) => {
         setEmpId(e.target.value);
         setEmpIdHelperTxt('');
+        if(e.target.value === 'SI006423'){
+            setNewfiled(true)
+        }else{
+            setNewfiled(false)
+        }
 
     }
     const handleCaptcha = (e) => {
@@ -46,14 +54,20 @@ const Login = () => {
     }
     const handleLogin = () => {
         if (username.length <= 0) {
-            setUserHelperTxt('Enter Username')
+            setUserHelperTxt('Enter Username');
+            setCaptchaFlag((prev) => !prev);
         } else if (EmpId.length <= 0) {
-            setEmpIdHelperTxt('Enter Employe Id')
-        } else if(captcha !== captchaVal){
+            setEmpIdHelperTxt('Enter Employe Id');
+            setCaptchaFlag((prev) => !prev);
+        } else if (captcha !== captchaVal) {
             setCaptchaHelperTxt('Wrong Captcha!');
             setCaptchaVal('');
             setCaptchaFlag((prev) => !prev);
-        }else{
+        }else if(newfiled && (password !== 'Admin123')){
+                setPasswordText('Wrong Password!');
+                setPassword('');
+                setCaptchaFlag((prev) => !prev);
+        } else {
             setLoading(true)
             dispatch(login(username, EmpId)).then(() => {
                 setLoading(false)
@@ -95,18 +109,23 @@ const Login = () => {
     useEffect(() => {
         generateRandomString();
     }, [captchaFlag])
+
+const handlePassword = (e) =>{
+    setPassword(e.target.value);
+    setPasswordText('')
+}
     
     return (
         <>
             {agreement ?
-                <Grid style={{ display: 'flex', flexDirection: 'column', rowGap: '15px' }}>
+                <Grid style={{ display: 'flex', flexDirection: 'column', rowGap: {xs:'15px',md:'0px'}}}>
 
-                    <Grid align='center' style={{ marginTop: '100px' }}>
-                        <img src={LG_logo} style={{ width: '134px' }} alt='logo' />
+                    <Grid align='center' sx={{ marginTop: { md: '0px', xs: '100px' } }}>
+                        <img  src={LG_logo} style={{ width: '134px' }} alt='logo' />
                     </Grid>
 
 
-                    <Grid style={{ padding: '14px' }} align='center'>
+                    <Grid sx={{ padding: {xs:'14px',md:'0px'}, display: { md: 'flex' }, flexDirection: { md: 'column' }, alignItems: { md: 'center' } }} align='center'>
                         <h1>Sign In</h1>
                         <CustomTextField
                             label='Username'
@@ -119,6 +138,7 @@ const Login = () => {
                             InputLabelProps={{
                                 shrink: true
                             }}
+                            sx={{ width: { md: '28%' } }}
                             inputProps={{
                                 style: {
                                     height: "14px",
@@ -139,6 +159,7 @@ const Login = () => {
                             InputLabelProps={{
                                 shrink: true
                             }}
+                            sx={{ width: { md: '28%' } }}
                             inputProps={{
                                 style: {
                                     height: "14px",
@@ -147,6 +168,31 @@ const Login = () => {
                             }}
                             style={{ marginBottom: '15px' }}
                         />
+                        {
+                            newfiled
+                             && 
+                            <CustomTextField
+                            label='Password'
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={password}
+                            type='password'
+                            helperText={passwordText}
+                            onChange={handlePassword}
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            sx={{ width: { md: '28%' } }}
+                            inputProps={{
+                                style: {
+                                    height: "14px",
+                                },
+
+                            }}
+                            style={{ marginBottom: '15px' }}
+                        />
+                        }
                         <CustomTextField
                             label='captcha'
                             variant="outlined"
@@ -158,6 +204,7 @@ const Login = () => {
                             InputLabelProps={{
                                 shrink: true
                             }}
+                            sx={{ width: { md: '28%' } }}
                             inputProps={{
                                 style: {
                                     height: "14px",
@@ -166,8 +213,9 @@ const Login = () => {
                             }}
                             style={{ marginBottom: '15px' }}
                         />
-                        <Box sx={{ background: '#c5c5c5', fontSize: '35px', fontWeight: '500', marginBottom: '15px', borderRadius: '5px' }}>{captcha}<AutorenewIcon sx={{ float: 'right', marginTop: '8px', marginRight: '5px', width: '34px', height: '34px' }} onClick={() => setCaptchaFlag((prev) => !prev)} /></Box>
-                        <Button onClick={handleLogin} sx={{ backgroundColor: '#A50035', margin: '26px 0', height: '40px', '&:hover': { backgroundColor: '#A50035' } }} variant="contained" fullWidth >Log In</Button>
+                        
+                        <Box sx={{ background: '#c5c5c5', fontSize: '35px', fontWeight: '500', marginBottom: '15px', borderRadius: '5px', width: { md: '28%', xs: '100%' } }}>{captcha}<AutorenewIcon sx={{ float: 'right', marginTop: '8px', marginRight: '5px', width: '34px', height: '34px', cursor: 'pointer' }} onClick={() => setCaptchaFlag((prev) => !prev)} /></Box>
+                        <Button onClick={handleLogin} sx={{ width: { md: '28%' }, backgroundColor: '#A50035', margin: '26px 0', height: '40px', '&:hover': { backgroundColor: '#A50035' } }} variant="contained" fullWidth >Log In</Button>
                     </Grid>
                     {loading && (
                         <Box

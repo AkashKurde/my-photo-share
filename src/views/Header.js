@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import CssBaseline from '@mui/material/CssBaseline';
-import { IconButton, Typography, useScrollTrigger } from '@mui/material';
+import { Avatar, Box, IconButton, Typography, useScrollTrigger } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOGOUT } from '../redux/actionTypes';
 import logOut from '../assets/logOut_logo.png'
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import { baseURL } from '../utils/services';
+import axios from 'axios';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import HomeIcon from '@mui/icons-material/Home';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 function ElevationScroll(props) {
     const { children, window } = props;
     const trigger = useScrollTrigger({
@@ -27,39 +32,89 @@ ElevationScroll.propTypes = {
 };
 
 const Header = (props) => {
-    const username = useSelector(state=>state.auth.user.empName)
+    const username = useSelector(state => state.auth.user)
+    const uploadFlag = useSelector(state=> state.UploadCompReduer.toggleFlag)
     const navigate = useNavigate();
-    const dispatch=useDispatch();
-    const handleBack=()=>{
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const locationName = location.pathname;
+    const handleBack = () => {
         navigate('/home')
     }
 
-const handleLogout=()=>{
-    dispatch({ type: LOGOUT })
-}
+    const handleLogout = () => {
+        dispatch({ type: LOGOUT });
+
+    }
+
+    const [score, setScore] = useState(0);
+    useEffect(() => {
+        axios.get(`${baseURL}/api/leader-board/self/${username.empId}`)
+            .then((res) => {
+                console.log('res self', res);
+                setScore(res.data.score)
+            }).catch((err) => {
+                console.log('err', err);
+                setScore(0);
+            })
+    }, [uploadFlag])
+
+
+    const handleAdmin = () => {
+        navigate('/admin');
+
+    }
+    const handleAdminHome = () => {
+        navigate('/home');
+
+    }
     return (
         <>
             {/* <CssBaseline />
             <ElevationScroll {...props}> */}
-                <AppBar sx={{ backgroundColor: '#A50035' }}>
-                    <Toolbar sx={{ justifyContent: 'space-between',paddingLeft: props.back && '6px',paddingRight: props.back && '14px' }}>
+            <AppBar sx={{ backgroundColor: '#A50035' }}>
+                <Toolbar sx={{ justifyContent: 'space-between', paddingLeft: props.back && '6px', paddingRight: props.back && '14px' }}>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         {
-                            props.back && <IconButton onClick={handleBack}><ArrowBackIcon sx={{color:'white'}}/></IconButton>
+                            props.back && <IconButton onClick={handleBack}><ArrowBackIcon sx={{ color: 'white' }} /></IconButton>
                         }
 
-                        <Typography variant="subtitle2" component="div" sx={{fontWeight:'bold'}}>
-                            {username}
+                        <Typography variant="subtitle2" component="div" sx={{ fontWeight: 'bold' }}>
+                            {username.empName}
                         </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex' }}>
+                        
                         {
-                            !props.back && <IconButton sx={{padding:'2px'}} onClick={handleLogout}><img src={logOut} alt='logout'/></IconButton>
+                            (!props.back && (username.empId === "SI006423"))
+                            && (locationName == '/admin') &&
+                            <Avatar onClick={handleAdminHome} sx={{ width: '35px', height: '35px', marginRight: '10px', cursor: 'pointer' }}>
+                                <HomeIcon sx={{ color: 'black' }} />
+                            </Avatar>
                         }
-                        {/* <Typography variant="subtitle2" onClick={handleLogout} component="div" sx={{borderRadius:'25px',padding:'5px',color:'black',backgroundColor:'#ffd700'}}>
-                            Score:05
-                        </Typography> */}
-                    </Toolbar>
-                </AppBar>
+                        {
+                            (!props.back && (username.empId === "SI006423"))
+                            && (locationName == '/home') &&
+                            <Avatar onClick={handleAdmin} sx={{ width: '35px', height: '35px', marginRight: '10px', cursor: 'pointer' }}>
+                                <AdminPanelSettingsIcon sx={{ color: 'black', marginLeft: '2px', marginTop: '1px' }} />
+                            </Avatar>
+                        }
+
+                        {
+                            !props.back &&
+                            <IconButton sx={{ padding: '2px' }} onClick={handleLogout}>
+                                <img src={logOut} alt='logout' />
+                            </IconButton>
+                        }
+
+                        {props.back && <Typography sx={{ display: 'flex', alignItems: 'center' }} variant="h6"><EmojiEventsIcon sx={{ color: '#E1B530', width: '30px', height: '30px' }} />{score}</Typography>}
+                    </Box>
+                </Toolbar>
+            </AppBar>
             {/* </ElevationScroll>
             <Toolbar /> */}
+            {/* <Leaderboard open={open} setOpen={setOpen}/> */}
         </>
     )
 }

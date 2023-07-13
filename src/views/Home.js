@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -31,8 +31,8 @@ const categorys = [
     { title: 'Couch' },
     { title: 'Tea Table' },
     { title: 'Cup' },
-    
-    
+
+
 ]
 
 // const categoriesList = [
@@ -57,7 +57,7 @@ const categorys = [
 // ];
 
 const categoriesList = [
-    
+
     { category: 'Bottles', imgUrl: Bottles },
     { category: 'Potted plant', imgUrl: Pottedplant },
     { category: 'Scale ', imgUrl: WScale },
@@ -72,7 +72,6 @@ const categoriesList = [
 export default function Home() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    
     const filterOptions = createFilterOptions({
         matchFrom: 'start',
         stringify: (option) => option.title,
@@ -91,61 +90,69 @@ export default function Home() {
             category.category.includes(selectedCategory.title)
         )
         : categoriesList;
-    console.log("selected", filteredCategories)
+    console.log("selected", filteredCategories);
     return (
         <>
-                <Container >
-                    <Box sx={{ marginTop: '100px', marginBottom: '16px' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' ,flexDirection:'column',rowGap:'17px'}}>
-                            <Autocomplete
-                                id="filter-demo"
-                                options={categorys}
-                                size="small"
-                                fullWidth
-                                onChange={handleAutocompleteChange}
-                                getOptionLabel={(option) => option.title}
-                                filterOptions={filterOptions}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Search Category" />}
-                            />
-                            <Typography variant='h6' sx={{fontWeight:'600'}}>Select category to upload</Typography>
-                        </Box>
-                        <Grid overflow="auto" maxHeight="70vh" container spacing={2} sx={{ marginTop: '10px',marginBottom:'10px' }}>
-                            {filteredCategories.map((category, index) => (
-                                // <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                                //     <CardActionArea onClick={() => handleCategoryClick(category)}>
-                                //         <Card style={{ cursor: 'pointer' }}>
-                                //             <CardContent>
-                                //                 <Typography variant="h6" component="div">
-                                //                     {category}
-                                //                 </Typography>
-                                //             </CardContent>
-                                //         </Card>
-                                //     </CardActionArea>
-                                // </Grid>
-                                <Grid key={index} item xs={6} sm={6} md={4} lg={3}>
-                                    <CardActionArea onClick={() => handleCategoryClick(category.category)}>
-                                        <Card style={{ cursor: 'pointer', height: '155px'}}>
-                                            <CardMedia
-                                                component="img"
-                                                height="120"
-                                                image={category.imgUrl}
-                                                alt="fan Image"
-                                                sx={{objectFit:'contain'}}
-                                            />
-                                            <CardContent sx={{ textAlign: 'center', padding: '4px' }} className='custom-card-content'>
-                                                <Typography variant="h6" sx={{fontWeight:'bold',fontSize:'1rem'}} component="div">
-                                                    {category.category}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </CardActionArea>
-                                </Grid>
-                            ))}
-                        </Grid>
+            <Container >
+                <Box sx={{ marginTop: { xs: '100px', md: '84px' }, marginBottom: '16px' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', rowGap: { xs: '17px', md: '4px' } }}>
+                        <Autocomplete
+                            id="filter-demo"
+                            options={categorys}
+                            size="small"
+                            fullWidth
+                            onChange={handleAutocompleteChange}
+                            getOptionLabel={(option) => option.title}
+                            filterOptions={filterOptions}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Search Category" />}
+                        />
+                        <Typography variant='h6' sx={{ fontWeight: '600' }}>Select category to upload</Typography>
                     </Box>
-                </Container>
-                
+                    <Grid overflow="auto" maxHeight="70vh" container spacing={2} sx={{
+                        marginTop: '10px', marginBottom: '10px', '&::-webkit-scrollbar': {
+                            width: '2px',  // Adjust the width as desired
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            backgroundColor: 'lightgray',  // Adjust the color as desired
+                            borderRadius: '4px',  // Adjust the border radius as desired
+                        },
+                    }}>
+                        {filteredCategories.map((category, index) => (
+                            // <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                            //     <CardActionArea onClick={() => handleCategoryClick(category)}>
+                            //         <Card style={{ cursor: 'pointer' }}>
+                            //             <CardContent>
+                            //                 <Typography variant="h6" component="div">
+                            //                     {category}
+                            //                 </Typography>
+                            //             </CardContent>
+                            //         </Card>
+                            //     </CardActionArea>
+                            // </Grid>
+                            <Grid key={index} item xs={6} sm={6} md={4} lg={3}>
+                                <CardActionArea onClick={() => handleCategoryClick(category.category)}>
+                                    <Card style={{ cursor: 'pointer', height: '155px' }}>
+                                        <CardMedia
+                                            component="img"
+                                            height="120"
+                                            image={category.imgUrl}
+                                            alt="fan Image"
+                                            sx={{ objectFit: 'contain' }}
+                                        />
+                                        <CardContent sx={{ textAlign: 'center', padding: '4px' }} className='custom-card-content'>
+                                            <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '1rem' }} component="div">
+                                                {category.category}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </CardActionArea>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+            </Container>
+
         </>
     );
 }

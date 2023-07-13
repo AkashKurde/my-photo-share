@@ -5,7 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import { Backdrop, ButtonBase, Card, CardContent, CardMedia, CircularProgress, Grid, IconButton, Typography } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SendIcon from '@mui/icons-material/Send';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { baseURL } from '../utils/services';
 import plupload from 'plupload';
@@ -14,12 +14,15 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import CollectionsIcon from '@mui/icons-material/Collections';
+import Leaderboard from './Leaderboard';
+import { setCompleteUpload } from '../redux/actions/UploadComplete';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 function Upload() {
+    const dispatch = useDispatch();
     const fileInputRef = useRef(null);
     const containerRef = useRef(null);
     const uploaderRef = useRef(null);
@@ -87,7 +90,7 @@ function Upload() {
                 mime_types: [
                     { title: 'Image files', extensions: 'jpg,gif,png' },
                 ],
-                prevent_duplicates: true
+                // prevent_duplicates: true
             },
             init: {
                 PostInit: function () {
@@ -127,10 +130,12 @@ function Upload() {
                     // }
                 // },
                 UploadComplete: function (up, files) {
+                    console.log('File upload status.', up,files);
                     setOpen(true);
                     setSeverity("success")
                     setMsg(`${files.length} Images uploaded to ${categoryName} category`)
                     setUploadComplete(!uploadComplete);
+                    dispatch(setCompleteUpload())
                     setImagePreviews([]);
                     setIsUploading(false);
                     uploader.splice();
@@ -138,11 +143,15 @@ function Upload() {
 
                 },
                 Error: function (up, err) {
-                    console.log('Error #' + err.code + ': ' + err.message);
+                    console.log('Error #',err.response);
                     setOpen(true);
-                    setMsg(err.message);
+                    setMsg(`${err.response ? 'Duplicate file found' : err.message}`);
                     setSeverity("error");
-                    // setIsUploading(false);
+                    uploader.stop();
+                    uploader.splice();
+                    uploader.refresh();
+                    setIsUploading(false);
+                    setImagePreviews([]);
                 }
             }
         });
@@ -185,7 +194,7 @@ function Upload() {
             <Box overflow="auto" maxHeight="77vh" width="100%" sx={{ marginTop: '75px'}} ref={containerRef}>
                 <Grid container spacing={2} justifyContent="center" sx={{paddingBottom:'10px'}}>
 
-                    {uploadedData.map((preview, index) => (
+                    {/* {uploadedData.map((preview, index) => (
                         <Grid item key={index} md={5}>
                             <Card sx={{ width: 320, height: 200 }}>
                                 <div style={{ position: 'relative' }}>
@@ -214,8 +223,8 @@ function Upload() {
                                 </CardContent>
                             </Card>
                         </Grid>
-                    ))}
-
+                    ))} */}
+                    {!(imagePreviews.length > 0 ) && <Leaderboard/>}
                     {imagePreviews.map((preview, index) => (
 
                         <Grid item key={index}>
